@@ -9,7 +9,7 @@ struct Data {
     float sat = 0;
     float ampli = 1;
     float lr = 1, lg = 1, lb = 1;
-    rgb_cal calibr[8];
+    rgb_cal calibr[16];
     uint8_t led_num[5] = {};
     uint8_t led_br = 255;
 };
