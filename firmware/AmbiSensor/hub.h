@@ -11,14 +11,22 @@ GyverHub hub("MyDevices", "AmbiSensor", "");
 #include "multi_veml.h"
 MultiVeml6040 rgb;
 
-uint8_t matrix[8][2] = {
+uint8_t matrix[16][2] = {
+    {1, 2},
     {1, 2},
     {0, 2},
+    {0, 2},
+    {0, 1},
     {0, 1},
     {0, 0},
+    {0, 0},
+    {1, 0},
     {1, 0},
     {2, 0},
+    {2, 0},
     {2, 1},
+    {2, 1},
+    {2, 2},
     {2, 2}};
 
 void build() {
@@ -43,7 +51,7 @@ void build() {
     hub.Canvas_("rgb", 300, 300, 0, 0, F("status"));
 
     if (hub.Button(0, F("calibrate"))) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 16; i++) {
             rgb.get(i).calibrate();
         }
         memory.update();
@@ -65,7 +73,7 @@ void hub_init() {
 
     Wire.begin();
     rgb.begin();
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 16; i++) {
         rgb.get(i).attachCalibrate(&data.calibr[i].r, &data.calibr[i].g, &data.calibr[i].b);
     }
 }
@@ -77,8 +85,8 @@ void show_ambi() {
             if (!data.led_num[i]) return;
         }
 
-        CRGB colors[8];
-        for (uint8_t i = 0; i < 8; i++) {
+        CRGB colors[16];
+        for (uint8_t i = 0; i < 16; i++) {
             
             int r = rgb.get(i).getRed() * data.ampli * data.lr;
             int g = rgb.get(i).getGreen() * data.ampli * data.lg;
@@ -122,7 +130,7 @@ void send_colors() {
         GHcanvas cv;
         hub.sendCanvasBegin("rgb", cv);
         cv.noStroke();
-        for (uint8_t i = 0; i < 8; i++) {
+        for (uint8_t i = 0; i < 16; i++) {
             cv.fill(rgb.get(i).getRGB());
             cv.rect(matrix[i][0] * 100, matrix[i][1] * 100, 100, 100);
         }
